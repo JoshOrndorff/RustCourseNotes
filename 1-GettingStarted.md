@@ -168,4 +168,25 @@ fn main() {
 }
 ```
 
-The output of this program is identical to before. It still says "Hello, world!". The first parameter to the `println!` macro is called a format string. And the `{}` curly braces are replaced with the next parameters that follow. You can imagine how this could be combined with variables to create some powerful output.
+The output of this program is identical to before. It still says "Hello, world!". The first parameter to the `println!` macro is called a format string. And the `{}` curly braces are replaced with the next parameters that follow.
+
+Format strings allow more than simple substitution. They also allow us to control details about how to data is formatted. To show this more clearly, let's consider some numerical data.
+
+```Rust
+// Standard formatting
+println!("The answer is {}", 42);
+
+// Number occupies 4 spaces
+println!("The answer is {:4}", 42);
+
+// Number occupies 4 spaces and has leading zeros
+println!("The answer is {:04}", 42);
+```
+
+```
+The answer is 42
+The answer is   42
+The answer is 0042
+```
+
+You can imagine how this could be combined with variables to create some powerful output. There are many more ways to format data, some of which will be covered later in the course. If you are looking for something specific, a web serach will typically help.
