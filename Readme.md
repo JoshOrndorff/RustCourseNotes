@@ -1,0 +1,1 @@
+This Repository serves as a design space for a course that teaches Rust wit ha focus on Substrate developers.
