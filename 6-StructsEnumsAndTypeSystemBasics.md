@@ -12,7 +12,7 @@ Structs allow packaging multiple primitive data types together into a logical pa
 
 When defining a struct, you provide a name for the type, which has a capital letter by convention. Then you provide a name for each field and a type for each field.
 
-```Rust
+```rust
 struct Fraction {
     numerator: u32,
     denominator: u32,
@@ -21,7 +21,7 @@ struct Fraction {
 
 To create an instance of a struct, you use the name of the type and the name of each field as before. But instead of specifying a type for each field, which has already been defined, we supply a value for each field.
 
-```Rust
+```rust
 let one_half = Fraction {
     numerator: 1,
     denominator: 2,
@@ -30,7 +30,7 @@ let one_half = Fraction {
 
 Structs, like tuples, need to have a value for each and every field. It is not valid to omit one of the fields.
 
-```Rust
+```rust
 let one = Fraction {
     numerator: 1,
 }
@@ -38,7 +38,7 @@ let one = Fraction {
 
 Similarly, each field must be of the type that was declared when the struct was defined.
 
-```Rust
+```rust
 let one_half = Fraction {
     numerator: 1u64,
     denominator: 2u64,
@@ -47,7 +47,7 @@ let one_half = Fraction {
 
 Now that we know how declare and instantiate structs, let's see how to access their fields. To access the inner data of a struct, we just use a dot operator and then the name of the field.
 
-```Rust
+```rust
 let my_frac = Fraction {
     numerator: 2,
     denominator: 3,
@@ -57,11 +57,11 @@ let my_bottom_value = my_frac.denominator;
 assert!(my_bottom_value == 3);
 ```
 
-Notice that here we have used simple integer literals like `3` as opposed to explicitly typed ones like `3u32`. This is allowed because the Rust compiler knows that the fields of the `Fraction` type are `u32` because they were delcated as such. Similarly, the compiler can infer that the type of `my_bottom_value` is u32 so we don't ened an explicit annotation.
+Notice that here we have used simple integer literals like `3` as opposed to explicitly typed ones like `3u32`. This is allowed because the Rust compiler knows that the fields of the `Fraction` type are `u32` because they were declared as such. Similarly, the compiler can infer that the type of `my_bottom_value` is u32 so we don't use an explicit annotation.
 
 We can use the same syntax to mutate the value of a field. But, as always in Rust, to make a value mutable it must be explicitly declared as such.
 
-```Rust
+```rust
 let mut f1 = Fraction {
     numerator: 1,
     denominator: 2,
@@ -87,7 +87,7 @@ So far we've learned two ways to store this data, both of which work, but neithe
 to name the type, and could lead to confusion and even bugs if tuples are used in another context in the program.
 Or we could use a struct, but this require repeating field names often when the position is a well-established mathematical convention.
 
-```Rust
+```rust
 // We could simply use a tuple.
 let point = (2u32, 3u32);
 
@@ -100,32 +100,32 @@ struct Point {
 
 For cases like this, Rust has the tuple struct. This allows us to name the type while referencing the fields positionally.
 
-```Rust
+```rust
 struct Point(u32, u32);
 ```
 
 When using tuple structs, the fields are accessed with the dot operator and an integer index exactly like they are when working with tuples.
 
-```Rust
-let burried_treasure = Point(4, 5);
+```rust
+let buried_treasure = Point(4, 5);
 
-let treasure_x_coord = burried_treasure.0;
+let treasure_x_coord = buried_treasure.0;
 ```
 
 It is also possible to create tuple structs with a single element inside. You may wonder why you would ever want to do this when you could simply use the underlying type directly, but in fact this is done frequently, and is often referred to as the "new type pattern". The new type pattern allows us the leverage Rust's type system to distinguish values of different semantic units even if they are represented digitally by the same underlying primitive type.
 
-A typical example would be something like storing Temperature data when you want to be sure that the units are in Celcius as opposed to something like Kelvin or Farenheit.
+A typical example would be something like storing Temperature data when you want to be sure that the units are in Celsius as opposed to something like Kelvin or Fahrenheit.
 
-```Rust
+```rust
 /// A temperature value that is stored in the celsius units.
 struct Celsius(u32);
 ```
 
-As a side note, notice the comment starting with a tripple slash here. This is known as a doc comment or a documentation comment. Doc comments can preceed data types, functions, and many other pieces of code and be used to generate automated documentation. We will not explore this in depth here, but know that it is good practice to use doc comments when creating your own types.
+As a side note, notice the comment starting with a triple slash here. This is known as a doc comment or a documentation comment. Doc comments can precede data types, functions, and many other pieces of code and be used to generate automated documentation. We will not explore this in depth here, but know that it is good practice to use doc comments when creating your own types.
 
 Finally, it is possible to create unit structs that have no fields at all. They are analogous to Rust's built-in unit type `()`. This is useful when you want a type to declare static methods on. We will cover methods later in this module.
 
-```Rust
+```rust
 /// A unit type that has no data fields.
 struct MyUnitType;
 ```
@@ -136,7 +136,7 @@ Now that we've created some custom types of our own, let's see some ways that th
 
 One way we can use our custom types is as parameters to functions. Let's define a function that allows us to multiply two fractions.
 
-```Rust
+```rust
 fn multiply_fractions(a: Fraction, b: Fraction) -> Fraction {
     Fraction {
         numerator: a.numerator * b.numerator,
@@ -145,20 +145,20 @@ fn multiply_fractions(a: Fraction, b: Fraction) -> Fraction {
 }
 ```
 
-Now we are ready to see the value of the new type pattern we discussed previously. Consider steam engine control circiut with a function that determines whether the boiler has warmed up enough to start the engine.
+Now we are ready to see the value of the new type pattern we discussed previously. Consider steam engine control circuit with a function that determines whether the boiler has warmed up enough to start the engine.
 
-```Rust
+```rust
 /// First attempt that is subject to unit confusion
 fn warm_enough(temp: u32) -> bool {
     temp > 100
 }
 ```
 
-In this naive function we run the risk of a user entering a Farenheit temperature by mistake, or interfacing with a temperature probe that is incorrectly configured to report Farenheit temperature.
+In this naive function we run the risk of a user entering a Fahrenheit temperature by mistake, or interfacing with a temperature probe that is incorrectly configured to report Fahrenheit temperature.
 
 We can make this function safer by using Rust's type system to insist that a Celsius temperate is entered. This program will not even compile if a plain u32 is passed.
 
-```Rust
+```rust
 struct Celsius(u32);
 
 fn warm_enough(temp: Celsius) -> bool {
@@ -168,7 +168,7 @@ fn warm_enough(temp: Celsius) -> bool {
 
 Another place we can use our custom types is as fields of other custom types. Consider a geometry program that builds up shapes from more fundamental primitive types.
 
-```Rust
+```rust
 struct Point(u32, u32);
 
 /// We define a Rectangle by its two opposite corners
@@ -192,9 +192,9 @@ Many of the types we've defined in this module are more restrictive than they ne
 
 To address this problem, Rust's Type system has a notion of Generic types, or "generics" for short. Code that uses generics and related concepts can become quite complex, and we will dive into that full complexity in due course, but for now, let's take a look at a simple use of generic types.
 
-TODO expliain this
+TODO explain this
 
-```Rust
+```rust
 /// A fraction type that allows arbitrarily large or small numerators and denominators
 struct Fraction<T> {
     numerator: T,
@@ -204,7 +204,7 @@ struct Fraction<T> {
 
 TODO
 
-```Rust
+```rust
 let my_precise_fraction = Fraction<u128> {
     numerator: 236,
     denominator: 473,
@@ -218,14 +218,14 @@ let my_low_memory_fraction = Fraction<u8> {
 
 We have succeeded in creating a Fraction type that allows us to use any precision integer wa want! But we have also introduced a few problems here. For example, it is now possible to create fractions with data types that don't make any sense at all. Consider this example.
 
-```Rust
+```rust
 let silly_fraction = Fraction<bool> {
     numerator: true,
     denominator: false,
 }
 ```
 
-Not only does this bool fraction not make any sense, we also won't be able to multiply bool fractions together because it bools themselves can't be multiplied. In the next video we will see how Rust's traits solve this problem.
+Not only does this bool fraction not make any sense, we also won't be able to multiply bool fractions together because booleans themselves can't be multiplied. In the next video we will see how Rust's traits solve this problem.
 
 # Traits
 

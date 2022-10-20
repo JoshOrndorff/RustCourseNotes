@@ -1,22 +1,24 @@
 # Course Introduction
 
-In this course we'll learn to program in the Rust programming language with a specific focus on the aspets of Rust that are used in the Substrate Blockchain framework. We do not assume any existing knowledge of Rust and will strat from the beginning. However, we do assume some familiarity with programming in general, and that you are fluent in at least one other programming language. If you are brand new to programming, it is totally possible to start with Rust, but this course may seem a bit fast for you.
+In this course we'll learn to program in the Rust programming language with a specific focus on the aspects of Rust that are used in the Substrate Blockchain framework. We do not assume any existing knowledge of Rust and will start from the beginning. However, we do assume some familiarity with programming in general, and that you are fluent in at least one other programming language. If you are brand new to programming, it is totally possible to start with Rust, but this course may seem a bit fast for you.
 
-We will roughly follow the excellent book, The Rust Programming Language by Steve Klabnik and Carol Nichols, and encourage you to read that book along with this course if you want to maximize your learning. Although we mostly follow that book, we will not cover everything that it covers, and will will cover some topics that it does not cover, such as building to web assembly, and cover some topics in more detail, such as generics and traits.
+We will roughly follow the excellent book, [The Rust Programming Language by Steve Klabnik and Carol Nichols](https://doc.rust-lang.org/book/), and encourage you to read that book along with this course if you want to maximize your learning. Although we mostly follow that book, we will not cover everything that it covers, and will will cover some topics that it does not cover, such as building to Web Assembly, and cover some topics in more detail, such as generics and traits.
 
-Throughout the coure we will emphasize the differences and similarities between Rust and other programming languages that you may have encountered in the past. We will also emphasize design patterns that are used in the Substrate blockchain framework, and build familiarity with coding techniques and patterns that you will encounter when using Substrate. That being said, this course will still be very useful for someone who wants to learn Rust but has no intention to use Substrate.
+Throughout the course we will emphasize the differences and similarities between Rust and other programming languages that you may have encountered in the past. We will also emphasize design patterns that are used in the Substrate blockchain framework, and build familiarity with coding techniques and patterns that you will encounter when using Substrate. That being said, this course will still be very useful for someone who wants to learn Rust but has no intention to use Substrate.
 
-In the next videos, we will get your environment set up so you can begin working with Rust. There is a video for each platform that this course supports (Linux, Mac, and Windows). These videos cover the same concepts, and you only need to follow the one for your platform of choice. If you are undecided about which platfor to use, I recommend Linux or Mac OS.
+In the next videos, we will get your environment set up so you can begin working with Rust. There is a video for each platform that this course supports (Linux, Mac, and Windows). These videos cover the same concepts, and you only need to follow the one for your platform of choice. If you are undecided about which platform to use, I recommend Linux or Mac OS.
 
 # Setting up Your Environment (Linux)
 
 ## Rustup
 
-There is a common tool in the Rust ecosystem called `rustup`. This tool allows you to easily install and manage multiple versions of Rust, and use different versions of Rust on a per-project basis. It is similar in some ways to a tool like `nvm`, the node version manager, in the Javascript ecosystem. In addition to managing version of Rust itself, it also installs `cargo` the rust build tool, and various langauge components such as different target architectures and clippy, the Rust linting tool.
+There is a common tool in the Rust ecosystem called `rustup`. This tool allows you to easily install and manage multiple versions of Rust, and use different versions of Rust on a per-project basis. It is similar in some ways to a tool like `nvm`, the node version manager, in the Javascript ecosystem. In addition to managing version of Rust itself, it also installs `cargo` the rust build tool, and various language components such as different target architectures and clippy, the Rust linting tool.
 
 To install rustup, simply run this install script.
 
-`curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
 
 This is executing a script from the internet, so if you prefer to be careful, I encourage you to check the contents of the script to make sure it isn't doing anything nasty. At least this script does _not_ require root access unlike many such scripts on the internet.
 
@@ -47,9 +49,11 @@ You can update your toolchains at any time by running `rustup update`, and you c
 
 ## VS Code
 
-Now that we have the Rust toolchain installed, let's install and configure a text editor. Throughout the course, I will be using VS code. There are many other very good text editors and integrated development environments out there, and you are more than welcome to use whichever one you like. Nonetheless, I'll show how to install VS code and configure it with some useful extensions for working with Rust. If you don't have a strong preference for editor, I recommend you use this setup.
+Now that we have the Rust toolchain installed, let's install and configure a text editor. Throughout the course, I will be using VS Code. There are many other very good text editors and integrated development environments out there, and you are more than welcome to use whichever one you like. Nonetheless, I'll show how to install VS Code and configure it with some useful extensions for working with Rust. If you don't have a strong preference for editor, I recommend you use this setup.
 
-If your distribution supports the snappy package manager, you may simply run `sudo snap install code --classic` and wait for the package to download and install. Otherwise, you can find a `.deb`, `.rpm`, or plain `.tar.gz` file to install at https://code.visualstudio.com/Download. Teaching each package manager is beyond the scope of this tutorial, but if you have trouble a web search for "install vscode <my distro>" should get you going again.
+If your distribution supports the snappy package manager, you may simply run `sudo snap install code --classic` and wait for the package to download and install. Otherwise, you can find a `.deb`, `.rpm`, or plain `.tar.gz` file to install at https://code.visualstudio.com/Download. Teaching each package manager is beyond the scope of this tutorial, but if you have trouble a web search for "install vscode <my OS and distribution>" should get you going again.
+
+If you prefer an open source _and_ freely-licensed distribution of VS Code that omits telemetry, I can recommend the [VSCodium](https://vscodium.com/) project. See the project's site for installation and reasoning why you might want to use this over VS Code itself.
 
 ## Extensions
 
@@ -57,9 +61,17 @@ Once you have your editor or IDE of choice installed, you can add some useful ex
 
 The first extension that we'll add is Rust Analyzer, a powerful static analysis tool for the Rust programming language. This extension provides some basics such as syntax highlighting and goto definition, as well as some more powerful features such as code completion, and documentation by hovering over code.
 
-To install it, enter VS Code's command pallet with Ctrl + Shift + P, and paste `ext install rust-lang.rust-analyzer`.
+To install it, enter VS Code's command pallet with `Ctrl + Shift + P`, and paste:
 
-The second extension is optional, but recommended if you like to do step debugging on your coding projects. It is the Code LLDB extension which provides seamless integration between lldb, the low level debugger, and VS Code. To install it, enter the command pallet again (Ctrl + Shift + P) and paste `ext install vadimcn.vscode-lldb`.
+```bash
+ext install rust-lang.rust-analyzer
+```
+
+The second extension is optional, but recommended if you like to do step debugging on your coding projects. It is the Code LLDB extension which provides seamless integration between LLDB, the low level debugger, and VS Code. To install it, enter the command pallet again (`Ctrl + Shift + P`) and paste:
+
+```bash
+ext install vadimcn.vscode-lldb
+```
 
 We will not use this extension actively in this course, but it is a great tool to have handy when it comes time to debug your own code.
 
@@ -75,7 +87,11 @@ TODO Consider offering support for native windows AND WSL
 
 # Hello World
 
-Now that we have our development environments set up to our liking, it is time to look at our first program, the calssic hello world. We'll leverage the cargo tool that we installed previously to scaffold this new program. Navigate to a working directory that you like and enter `cargo new my-first-program`.
+Now that we have our development environments set up to our liking, it is time to look at our first program, the classic `Hello World`. We'll leverage the cargo tool that we installed previously to scaffold this new program. Navigate to a working directory that you like and enter:
+
+```bash
+cargo new my-first-program
+```
 
 ## Project Structure
 
@@ -84,7 +100,11 @@ $ cargo new my-first-program
      Created binary (application) `my-first-program` package
 ```
 
-This creates a new director called `my-first-program` with the structure of a simple Rust program inside. Navigate into that directory, and launch VS code with the command `code .`.
+This creates a new director called `my-first-program` with the structure of a simple Rust program inside. Navigate into that directory, and launch VS Code with the command:
+
+```bash
+code .
+```
 
 Among the files that cargo has created for us is  `.gitignore` file for use with the git version control system. I highly recommend using git for your Rust projects, and all your programming projects for that matter, but we will not cover git in this course. Looking at the file, we see that Rust projects typically want to ignore the `target` directory which gives us a clue about where our build artifacts will end up when we compile our program.
 
@@ -102,7 +122,7 @@ Lastly, we see the `[dependencies]` section. This is where we list any other cra
 
 Finally, let's take a look in the `src` directory where the Rust source code is kept. There is a single file called `main.rs`. This file name indicates that the entry point to the entire program is in this file. Looking inside, we see the `main` function which will be called when we run our program. We will learn how to read function signatures later on in the course, but for now we can simply notice that this function takes no arguments and has no return type.
 
-Inside we have a call to a single macro `println!("Hello, World!");` The `!` tells us that this is a macro, and, as you have probably guessed, this macro is responsible for printing a line of tet to the screen with a new line character at the end. `println!` is one of the most commons macros in Rust, but it is only available whenthe standard library is available. Typically this will be the case, but one notable exception is inside of a Substrate runtime. We'll discuss this further near the end of the course when we talk about web assembly. For now, we will use `println!` often.
+Inside we have a call to a single macro `println!("Hello, World!");` The `!` tells us that this is a macro, and, as you have probably guessed, this macro is responsible for printing a line of tet to the screen with a new line character at the end. `println!` is one of the most commons macros in Rust, but it is only available when the standard library is available. Typically this will be the case, but one notable exception is inside of a Substrate runtime. We'll discuss this further near the end of the course when we talk about web assembly. For now, we will use `println!` often.
 
 ## Build and Run
 
@@ -128,7 +148,7 @@ $ cargo run
 Hello, world!
 ```
 
-So far we have created debug builds of our programs. Debug builds keep debugging information such as variable names in the binary, and are also faster to compile. For these reasons, we will use debug builds throughout this course. It is also possible to create a release build which is slimmer and faster to execute, but slower to compile. To get a release build, add the `--release` flag to either `cargo build` or `cargo run`. When working with Substrate, it is often necessary to create a release build so that time sensative tasks (such as block authoring) execute quickly enough.
+So far we have created debug builds of our programs. Debug builds keep debugging information such as variable names in the binary, and are also faster to compile. For these reasons, we will use debug builds throughout this course. It is also possible to create a release build which is slimmer and faster to execute, but slower to compile. To get a release build, add the `--release` flag to either `cargo build` or `cargo run`. When working with Substrate, it is often necessary to create a release build so that time sensitive tasks (such as block authoring) execute quickly enough.
 
 ```bash
 $ cargo run --release
@@ -143,6 +163,8 @@ Hello, world!
 In the previous video, we learned the basic usage of the `println!` macro. In this video we will go just a bit deeper on how to print output.
 
 In addition to the `println!` macro, there is also the `print!` macro which does the exact same thing, but without appending a new line to the end.
+
+**`main.rs`**
 
 ```rust
 fn main() {
@@ -162,7 +184,9 @@ Notice that my command prompt is now on the exact same line as the output of the
 
 Both the `println!` and `print!` macros support format string substitution. We will use this feature extensively after we learn about variables, but for now let's explore it with simple strings.
 
-```Rust
+**`main.rs`**
+
+```rust
 fn main() {
     println!("Hello, {}!", "world");
 }
@@ -172,15 +196,19 @@ The output of this program is identical to before. It still says "Hello, world!"
 
 Format strings allow more than simple substitution. They also allow us to control details about how to data is formatted. To show this more clearly, let's consider some numerical data.
 
-```Rust
-// Standard formatting
-println!("The answer is {}", 42);
+**`main.rs`**
 
-// Number occupies 4 spaces
-println!("The answer is {:4}", 42);
+```rust
+fn main() {
+    // Standard formatting
+    println!("The answer is {}", 42);
 
-// Number occupies 4 spaces and has leading zeros
-println!("The answer is {:04}", 42);
+    // Number occupies 4 spaces
+    println!("The answer is {:4}", 42);
+
+    // Number occupies 4 spaces and has leading zeros
+    println!("The answer is {:04}", 42);
+}
 ```
 
 ```
@@ -189,4 +217,4 @@ The answer is   42
 The answer is 0042
 ```
 
-You can imagine how this could be combined with variables to create some powerful output. There are many more ways to format data, some of which will be covered later in the course. If you are looking for something specific, a web serach will typically help.
+You can imagine how this could be combined with variables to create some powerful output. There are many more ways to format data, some of which will be covered later in the course. If you are looking for something specific, a web search will typically help.
