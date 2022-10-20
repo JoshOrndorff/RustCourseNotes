@@ -188,4 +188,45 @@ new, setter, getter
 
 # Generics
 
+Many of the types we've defined in this module are more restrictive than they need to be. For example, our fraction type insists that its inner values be of type `u32`. It may be that in some cases, programmers want more precision and prefer to use `u64` instead. It would be a shame to have to re-write the entire struct and all of its methods just to change all the `u32` to `u64`.
+
+To address this problem, Rust's Type system has a notion of Generic types, or "generics" for short. Code that uses generics and related concepts can become quite complex, and we will dive into that full complexity in due course, but for now, let's take a look at a simple use of generic types.
+
+TODO expliain this
+
+```Rust
+/// A fraction type that allows arbitrarily large or small numerators and denominators
+struct Fraction<T> {
+    numerator: T,
+    denominator: T,
+}
+```
+
+TODO
+
+```Rust
+let my_precise_fraction = Fraction<u128> {
+    numerator: 236,
+    denominator: 473,
+}
+
+let my_low_memory_fraction = Fraction<u8> {
+    numerator: 1,
+    denominator: 4,
+}
+```
+
+We have succeeded in creating a Fraction type that allows us to use any precision integer wa want! But we have also introduced a few problems here. For example, it is now possible to create fractions with data types that don't make any sense at all. Consider this example.
+
+```Rust
+let silly_fraction = Fraction<bool> {
+    numerator: true,
+    denominator: false,
+}
+```
+
+Not only does this bool fraction not make any sense, we also won't be able to multiply bool fractions together because it bools themselves can't be multiplied. In the next video we will see how Rust's traits solve this problem.
+
 # Traits
+
+TODO
