@@ -145,7 +145,7 @@ let unit: () = ();
 
 Like many languages, Rust supports compound types that store multiple scalar values. The two that are most common are tuples and arrays.
 
-TODO Tuples use parenthesis, each value has its own type, types may be of different values. accessed with dot operator.
+TODO Tuples use parentheses, each value has its own type, types may be of different values. accessed with dot operator.
 
 TODO Arrays use square brackets, have fixed length, each value is of the same type. accessed with indices of type usize.
 
