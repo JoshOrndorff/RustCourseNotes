@@ -49,7 +49,7 @@ x = 6u32;
 println!("{}", x);
 ```
 
-When writing your own programs, you should only make variables mutable when you specifically expect them to change value. This way the Rust compiler can help you detect potential errors in your program if you try to change a variable that was never expected to hang.
+When writing your own programs, you should only make variables mutable when you specifically expect them to change value. This way the Rust compiler can help you detect potential errors in your program if you try to change a variable that was never expected to change.
 
 # Shadowing and Scope
 
