@@ -57,7 +57,7 @@ let my_bottom_value = my_frac.denominator;
 assert!(my_bottom_value == 3);
 ```
 
-Notice that here we have used simple integer literals like `3` as opposed to explicitly typed ones like `3u32`. This is allowed because the Rust compiler knows that the fields of the `Fraction` type are `u32` because they were declared as such. Similarly, the compiler can infer that the type of `my_bottom_value` is u32 so we don't use an explicit annotation.
+Notice that here we have used simple integer literals like `3` as opposed to explicitly typed ones like `3u32`. This is allowed because the Rust compiler knows that the fields of the `Fraction` type are `u32` because they were declared as such. Similarly, the compiler can infer that the type of `my_bottom_value` is u32 so we don't need an explicit annotation.
 
 We can use the same syntax to mutate the value of a field. But, as always in Rust, to make a value mutable it must be explicitly declared as such.
 
