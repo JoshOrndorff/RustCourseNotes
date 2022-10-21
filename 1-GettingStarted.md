@@ -2,7 +2,7 @@
 
 In this course we'll learn to program in the Rust programming language with a specific focus on the aspects of Rust that are used in the Substrate Blockchain framework. We do not assume any existing knowledge of Rust and will start from the beginning. However, we do assume some familiarity with programming in general, and that you are fluent in at least one other programming language. If you are brand new to programming, it is totally possible to start with Rust, but this course may seem a bit fast for you.
 
-We will roughly follow the excellent book, [The Rust Programming Language by Steve Klabnik and Carol Nichols](https://doc.rust-lang.org/book/), and encourage you to read that book along with this course if you want to maximize your learning. Although we mostly follow that book, we will not cover everything that it covers, and will will cover some topics that it does not cover, such as building to Web Assembly, and cover some topics in more detail, such as generics and traits.
+We will roughly follow the excellent book, [The Rust Programming Language by Steve Klabnik and Carol Nichols](https://doc.rust-lang.org/book/), and encourage you to read that book along with this course if you want to maximize your learning. Although we mostly follow that book, we will not cover everything that it covers, and will will cover some topics that it does not cover, such as building to WebAssembly, and cover some topics in more detail, such as generics and traits.
 
 Throughout the course we will emphasize the differences and similarities between Rust and other programming languages that you may have encountered in the past. We will also emphasize design patterns that are used in the Substrate blockchain framework, and build familiarity with coding techniques and patterns that you will encounter when using Substrate. That being said, this course will still be very useful for someone who wants to learn Rust but has no intention to use Substrate.
 
@@ -122,7 +122,7 @@ Lastly, we see the `[dependencies]` section. This is where we list any other cra
 
 Finally, let's take a look in the `src` directory where the Rust source code is kept. There is a single file called `main.rs`. This file name indicates that the entry point to the entire program is in this file. Looking inside, we see the `main` function which will be called when we run our program. We will learn how to read function signatures later on in the course, but for now we can simply notice that this function takes no arguments and has no return type.
 
-Inside we have a call to a single macro `println!("Hello, World!");` The `!` tells us that this is a macro, and, as you have probably guessed, this macro is responsible for printing a line of tet to the screen with a new line character at the end. `println!` is one of the most commons macros in Rust, but it is only available when the standard library is available. Typically this will be the case, but one notable exception is inside of a Substrate runtime. We'll discuss this further near the end of the course when we talk about web assembly. For now, we will use `println!` often.
+Inside we have a call to a single macro `println!("Hello, World!");` The `!` tells us that this is a macro, and, as you have probably guessed, this macro is responsible for printing a line of tet to the screen with a new line character at the end. `println!` is one of the most commons macros in Rust, but it is only available when the standard library is available. Typically this will be the case, but one notable exception is inside of a Substrate runtime. We'll discuss this further near the end of the course when we talk about WebAssembly. For now, we will use `println!` often.
 
 ## Build and Run
 
@@ -164,8 +164,6 @@ In the previous video, we learned the basic usage of the `println!` macro. In th
 
 In addition to the `println!` macro, there is also the `print!` macro which does the exact same thing, but without appending a new line to the end.
 
-**`main.rs`**
-
 ```rust
 fn main() {
     print!("Hello, world!");
@@ -184,8 +182,6 @@ Notice that my command prompt is now on the exact same line as the output of the
 
 Both the `println!` and `print!` macros support format string substitution. We will use this feature extensively after we learn about variables, but for now let's explore it with simple strings.
 
-**`main.rs`**
-
 ```rust
 fn main() {
     println!("Hello, {}!", "world");
@@ -196,10 +192,7 @@ The output of this program is identical to before. It still says "Hello, world!"
 
 Format strings allow more than simple substitution. They also allow us to control details about how to data is formatted. To show this more clearly, let's consider some numerical data.
 
-**`main.rs`**
-
 ```rust
-fn main() {
     // Standard formatting
     println!("The answer is {}", 42);
 
@@ -208,10 +201,9 @@ fn main() {
 
     // Number occupies 4 spaces and has leading zeros
     println!("The answer is {:04}", 42);
-}
 ```
 
-```
+```text
 The answer is 42
 The answer is   42
 The answer is 0042
