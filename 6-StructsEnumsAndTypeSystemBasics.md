@@ -65,12 +65,12 @@ We can use the same syntax to mutate the value of a field. But, as always in Rus
 let mut f1 = Fraction {
     numerator: 1,
     denominator: 2,
-}
+};
 
 let f2 = Fraction {
     numerator: 1,
     denominator: 2,
-}
+};
 
 // here we can mutate the denominator of f1
 f1.denominator = 3;
@@ -180,15 +180,140 @@ struct Rectangle {
 
 # Enums
 
+TODO
+
 # Methods
 
-multiply fraction
+We saw previously how we can write functions that take our custom data types as parameters or return our custom data types. Rust also supports the notion of a method. A method is a special function that is defined in the context of a particular type.
 
-new, setter, getter
+If you are familiar with Object Oriented languages like Java, methods will be very familiar. In Rust, methods are defined in a separate block than the type itself, unlike Java where the methods and data are all part of the same class. This adds some flexibility to Rust as we will see. Methods always take function 
+
+Methods are very similar to functions in syntax. The only difference is that they go in an `impl` block. As an illustrative example, lets re-write the `multiply_fraction` function the we looked at earlier as a method.
+
+```rust
+impl Fraction {
+    /// Multiply two fractions together, and return the Product
+    /// as a third new fraction
+    fn multiply(self, other: Fraction) -> Fraction {
+        Fraction {
+            numerator: self.numerator * other.numerator,
+            denominator: self.denominator * other.denominator,
+        }
+    }
+}
+```
+
+This method is very similar to the function we wrote previously. The main difference is the first parameter, `self`. Notice that this `self` has a lowercase s like any other variable name and no type annotation. The first parameter of a method is always an instance of the type that the method is associated with, in this case Fraction, and it is always called `self`. Otherwise this method is the same as our previous standalone function.
+
+To call this method, we call it _on_ an instance of the type using dot notation like in many other languages.
+
+```rust
+let f1 = Fraction {
+    numerator: 1,
+    denominator: 2,
+};
+
+let f2 = Fraction {
+    numerator: 1,
+    denominator: 2,
+};
+
+let f3 = f1.multiply(f2);
+```
+
+One weakness of the method as it is written above is that it takes ownership of both of the original fractions, and consequently, de-allocates them when it returns. A better signature would only borrow the two original fractions.
+
+```rust
+impl Fraction {
+    /// Multiply two fractions together, and return the Product
+    /// as a third new fraction
+    fn multiply(&self, other: &Fraction) -> Fraction {
+        Fraction {
+            numerator: self.numerator * other.numerator,
+            denominator: self.denominator * other.denominator,
+        }
+    }
+}
+```
+
+In the previous two versions of this function, we've explicitly listed the type with which the function is associated, namely, `Fraction`, several times. While this is perfectly valid Rust, it is also possible to use the type `Self` which has a capital S like other types in Rust. The `Self` is only available in the context of an `impl` block, and it refers to whatever type the function is associated with. Here's how the function looks when we use the `Self` type.
+
+```rust
+impl Fraction {
+    /// Multiply two fractions together, and return the Product
+    /// as a third new fraction
+    fn multiply(self, other: Self) -> Self {
+        Self {
+            numerator: self.numerator * other.numerator,
+            denominator: self.denominator * other.denominator,
+        }
+    }
+}
+```
+
+It is also valid, although not particularly idiomatic, to mix some uses of `Self` with some uses of `Fraction`.
+
+## API Methods
+
+We've seen already that we can access fields of our `Fraction` type by using the dot operator and the name of the field. However, this only works if we are in the same module that defines the struct, or if thei fields are declared as public with the `pub` keyword. We will discuss visibility and API design later in this unit. But for now, know that it is often not possible to access the fields of types that are defined in foreign code.
+
+Rather, it is often the case that a programmer-friendly API is defined on the types to prevent accidentally introducing inconsistent data. Some of the most common such methods are accessor and modifier methods aka "getters" and "setters".
+
+Continuing the example of our `Fraction` type, such methods would look like this.
+
+```rust
+impl Fraction {
+    /// Access the numerator of a given fraction
+    fn get_numerator(&self) -> u32{
+        self.numerator
+    }
+
+    /// Change the numerator of a given fraction
+    fn set_numerator(&mut self, new_numerator: u32) {
+        self.numerator = new_numerator
+    }
+}
+```
+
+The getter method should contain no surprises as all the relevant concepts were already introduced in our multiply fractions example. The setter however demonstrates that methods can borrow the `self` parameter mutably. Because the `set_numerator` method will mutate the fraction on which it is called, it can only be called if the fraction was defined as mutable with the `mut` keyword.
+
+## Associated Functions
+
+Finally we will discuss the concept of associated function. In fact, all methods are associated functions. But not all associated functions are methods. You may remember I said previously that all methods take an instance of the type called `self` as the first parameter. Well a function may still appear in an `impl` block without this `self` parameter, and such functions are called associated functions, but they are not called method.
+
+CAUTION: The jargon here is different than Java. In Java, methods without the `this` (analogous to `self`) parameter are still called methods. In fact they are called static methods. Although the language is different, the concepts are still the same. And if you use the term "static method" Rust programmers are likely to know what you mean, although doing so is technically incorrect.
+
+As an example of a static method, let's consider the API we might provide for a consumer of our Fraction library to create a new fraction.
+
+```rust
+impl Fraction {
+    fn new(numerator: u32, denominator: u32) -> Self {
+        Self{
+            numerator: numerator,
+            denominator: denominator,
+        }
+    }
+}
+```
+
+This function is very straight forward, and simply puts the supplied data into the appropriate fields.
+
+I'll take this opportunity to mention a short-hand syntax that is available in Rust and makes the life of the programmer a little nicer. In our new function, we had local variables called `numerator` and `denominator` and we put them into fields with exactly the same names. When assigning a field from a local variable with exactly, the same name, it is valid Rust to elide the field name entirely, and only put the value. The compiler knows what field you are using based on the variable name.
+
+```rust
+impl Fraction {
+    fn new(numerator: u32, denominator: u32) -> Self {
+        Self{
+            numerator,
+            denominator,
+        }
+    }
+}
+```
 
 # Generics
 
-Many of the types we've defined in this module are more restrictive than they need to be. For example, our fraction type insists that its inner values be of type `u32`. It may be that in some cases, programmers want more precision and prefer to use `u64` instead. It would be a shame to have to re-write the entire struct and all of its methods just to change all the `u32` to `u64`.
+Many of the types we've defined in this module are more restrictive than they need to be. For example, our Fraction type insists that its inner values be of type `u32`. It may be that in some cases, programmers want more precision and prefer to use `u64` instead. It would be a shame to have to re-write the entire struct and all of its methods just to change all the `u32` to `u64`.
 
 To address this problem, Rust's Type system has a notion of Generic types, or "generics" for short. Code that uses generics and related concepts can become quite complex, and we will dive into that full complexity in due course, but for now, let's take a look at a simple use of generic types.
 
@@ -230,3 +355,11 @@ Not only does this bool fraction not make any sense, we also won't be able to mu
 # Traits
 
 TODO
+
+Trait bound on Fraction Struct
+
+TODO conditional methods. Multiply only defined if Mul exists
+
+Could implement Mul rait directly for fraction
+
+Can only implement trait if either the trait or the type is from the local crate.
