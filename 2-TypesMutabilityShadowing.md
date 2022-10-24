@@ -150,3 +150,10 @@ TODO Tuples use parentheses, each value has its own type, types may be of differ
 TODO Arrays use square brackets, have fixed length, each value is of the same type. accessed with indices of type usize.
 
 It is also possible to make your own data types. We will cover making custom types later in the course. For example, if you need larger integers than the built-in types allow, Substrate includes `U256`, and `U512` types for this purpose. If you want arbitrarily large integers like the ones found in Python and other programing languages, you can consider using the [num-bigint](https://crates.io/crates/num-bigint) crate.
+
+## Rust Operators
+
+- Arithmetic - addition, subtraction, multiplication, division, remainder, exponent
+- Boolean - and, or, not
+- Comparison
+- Bitwise
