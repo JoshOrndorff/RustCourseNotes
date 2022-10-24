@@ -277,6 +277,19 @@ impl Fraction {
 
 The getter method should contain no surprises as all the relevant concepts were already introduced in our multiply fractions example. The setter however demonstrates that methods can borrow the `self` parameter mutably. Because the `set_numerator` method will mutate the fraction on which it is called, it can only be called if the fraction was defined as mutable with the `mut` keyword.
 
+The setter and getter methods very common and very important, but they are also somewhat trivial. Let's consider a more interesting method, one to reduce a fraction to its simplified form. Here we will focus on the signature of the function, and leave the implementation to you, the learner, as an exercise. Notice that it is perfectly acceptable to have multiple `impl` blocks for the same type.
+
+```rust
+impl Fraction {
+    /// Reduce a Fraction in-place by mutating its numerator and denominator.
+    fn reduce(&mut self) {
+        // Implementation left as an exercise.
+    }
+}
+```
+
+Like the setter, this method may mutate the fields of the fraction, and thus the signature indicates a mutable borrow.
+
 ## Associated Functions
 
 Finally we will discuss the concept of associated function. In fact, all methods are associated functions. But not all associated functions are methods. You may remember I said previously that all methods take an instance of the type called `self` as the first parameter. Well a function may still appear in an `impl` block without this `self` parameter, and such functions are called associated functions, but they are not called method.
