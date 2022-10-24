@@ -367,12 +367,226 @@ Not only does this bool fraction not make any sense, we also won't be able to mu
 
 # Traits
 
-TODO
+Traits are Rusts way of allowing programmers to define shared abstract behavior that may exist on multiple types. This concept is present in most modern programming languages. For example it manifests as `interface`s in Java, type classes in Haskell, and mix-ins in Ruby.
 
-Trait bound on Fraction Struct
+## Area Example
 
-TODO conditional methods. Multiply only defined if Mul exists
+As a first example, let's consider a few 2D geometry types. Each of these types has different fields, but all of them are have some area, and it is valid to expect that their area can be calculated from their fields. Let's consider a Square and a Circle for example
 
-Could implement Mul rait directly for fraction
+```rust
+struct Square {
+    side_length: u32,
+}
 
-Can only implement trait if either the trait or the type is from the local crate.
+struct Circle {
+    radius: u32,
+}
+```
+
+Any geometry program is likely to want to know the area of these various shapes. We already know how to implement an `area` method on each of them. But implementing a one-off method on each type is problematic.
+
+One surface-level problem is that programmers might choose slightly different names for the area method on each struct.
+
+```rust
+impl Square {
+    fn get_area(&self) -> u32 {
+        //--snip--
+    }
+}
+
+impl Circle {
+    fn calculate_area(&self) -> u32 {
+        //--snip--
+    }
+}
+```
+
+A second, more fundamental, problem is that we may want to write a function that can work with _any_ object whose area can be calculated, and we need a way to express to the compiler that a particular type can have its area calculated. Traits solve both of these problems.
+
+Let's define a trait for any type that can have its area calculated.
+
+```rust
+trait Area {
+    fn area(&self) -> u32;
+}
+```
+
+To do this, we use the keyword `trait` and then the name of the trait which starts with a capital letter, just like types do. Inside the body of the trait, we list some function signatures, but we do not include the body. Rather we just end the signature with a semicolon. The body of the function can be different for each type that implements the trait. The concept of writing the function signature without the body should be familiar to C and C++ developers as it is similar to how header files work in those languages.
+
+There are a few items other than just function signatures that can go inside a trait definition, but we will save that discussion for later in the course.
+
+Let's implement this trait for our two structs.
+
+```rust
+impl Area for Square {
+    fn area(&self) -> u32 {
+        self.side_length * self.side_length
+    }
+}
+
+impl Area for Circle {
+    fn area(&self) -> u32 {
+        const PI: u32  = 3; // LOL. This is a good approximation, right?
+        PI * self.radius * self.radius
+    }
+}
+```
+
+We can see here that we have solved the shallower naming problem because the trait defines the name of the area function once for every type that implements it.
+
+## Trait Bounds for Function parameters
+
+Now let's see how we can solve the deeper problem of writing a function that works with any shape that can have it's area calculated. Imagine that we want to know how many cans of paint we will need to cover a particular shape. For this we use a feature of Rust called a trait bound.
+
+```rust
+fn how_many_cans<T: Area>(shape: T) -> u32 {
+    /// Each can of paint covers 4 units (eg m^2)
+    const one_can: u32 = 4;
+
+    // Get the area of the shape in question
+    let area_to_paint = shape.area();
+
+    // We basically just divide. But we need to be sure there is
+    // extra paint, not slightly too little paint.
+    (area_to_paint + one_can - 1) / one_can
+}
+```
+
+There are a few new things happening in this function signature. The first is the presence of the generic parameter `T` in a function. We previously saw how to declare generics on a struct, and it is quite similar for functions. Any generic types go in angle brackets immediately after the name of the function. But it is more than just a generic parameter. This time we also introduce a trait bound. That's the `: Area` part. This syntax says that while the `how_many_cans` function can be used with multiple different types, it can't be used with just any old type. It must be used with a type that implements our `Area` trait.
+
+By using this trait bound, we ensure that any type passed to this function implements the necessary area trait. And if you try to pass a different type, for example `bool`, then your code won't compile.
+
+## Conditional Method Implementation.
+
+It turns out that trait bounds are the exact tool we need to make our generic Fraction type work. Let's take a look at how we can use trait bounds here.
+
+As a reminder, here's where we left our Fraction type.
+
+```rust
+struct Fraction<T> {
+    numerator: T,
+    denominator: T,
+}
+```
+
+We discussed that leaving the type `T` unbounded is a problem because a user could try to use the type `bool`. Such a fraction does not make any sense at all, but concretely it doesn't make sense because bools, can't be multiplied. Let's see if the compiler can tell us that itself.
+
+```rust
+impl<T> Fraction<T> {
+    /// Multiply two fractions together, and return the Product
+    /// as a third new fraction
+    fn multiply(&self, other: &Self) -> Self {
+        Self {
+            numerator: self.numerator * other.numerator,
+            denominator: self.denominator * other.denominator,
+        }
+    }
+}
+```
+
+First notice the syntax for implementing a method on a struct that has generics. we start with `impl<T>` which can be understood as "for all types, `T`, implement the following. Then, as before, we name the type that we are associating this method with. 
+
+```text
+error[E0369]: cannot multiply `T` by `T`
+  --> src/main.rs:10:39
+   |
+10 |             numerator: self.numerator * other.numerator,
+   |                        -------------- ^ --------------- T
+   |                        |
+   |                        T
+   |
+help: consider restricting type parameter `T`
+   |
+5  | impl<T: std::ops::Mul<Output=T>> Fraction<T> {
+   |       +++++++++++++++++++++++++
+
+```
+
+Indeed, the compiler tells us that we "cannot multiply `T` by `T`". It also offers a very helpful suggestion using the `Mul` trait from the standard library. The compiler's suggestion will work here, and I encourage you to confirm that by making the suggested change. However, the understand the `Mul` trait, we need to first learn about associated types, which we will not cover until later in the course. So for now, let's invent our own `Multiply` trait for any type that can be multiplied together, and implement it for a few primitive unsigned integer types.
+
+```rust
+trait Multiply {
+    fn multiply(&self, other: &Self) -> Self;
+}
+
+impl Multiply for u8 {
+    fn multiply(&self, other: &Self) -> Self {
+        self * other
+    }
+}
+
+impl Multiply for u16 {
+    fn multiply(&self, other: &Self) -> Self {
+        self * other
+    }
+}
+
+impl Multiply for u32 {
+    fn multiply(&self, other: &Self) -> Self {
+        self * other
+    }
+}
+
+// Could also so u64, u128, but the point is made.
+```
+
+We can now tell the compiler that our fraction multiplication method can be used for any fraction whose inner values implement this `Multiply` trait.
+
+```rust
+impl<T: Multiply> Fraction<T> {
+    /// Multiply two fractions together, and return the Product
+    /// as a third new fraction
+    fn multiply(&self, other: &Self) -> Self {
+        Self {
+            numerator: self.numerator.multiply(&other.numerator),
+            denominator: self.denominator.multiply(&other.denominator),
+        }
+    }
+}
+```
+
+Of course, we now need to call the `multiply` method instead of just using the `*` operator. But the more interesting difference is the trait bound `T: Multiply`. This can be understood as "For all types `T` that implement the `Multiply` trait, implement this method".
+
+Our fraction type is now able to support multiplication as long as the inner data type also supports it, and we communicate that through a trait bound.
+
+# Trait Bounds on Type Definitions
+
+In the previous video we showed how to use a trait bound on the `impl` block where we associated the `multiply` method with our Fraction type. In this video I want to dig on on what _exactly_ we did there, and what we didn't do yet.
+
+In fact, we did _not_ prohibit creating instances of type `Fraction<bool>`. With the code from the previous video it is still perfectly possible to create such bool fractions. But what we did do is express to the compiler that for certain generic types, it is now possible to multiply fractions together. This is an interesting and powerful feature of Rust. We were able to conditionally associate a method with our `Fraction<T>` type depending on whether or not its generic types meets a particular trait bound. If the generic type implements the `Multiply` trait, the the instance has a `multiply` method. But if the generic type does not implement this trait, then the method will not be associated.
+
+Having observed this powerful aspect of Rust, you may be thinking, "Yeah, that is useful and interesting, but in this case, do we really want to allow even creating weird fractions that can't be multiplied? Well if you don't we can express that in Rust as well. All we have to do is add... you guessed it, a trait bound... to the struct definition.
+
+```rust
+struct Fraction<T: Multiply> {
+    numerator: T,
+    denominator: T,
+}
+```
+
+By adding the trait bound to the struct definition, we have now made it impossible to even create a Fraction whose generic type cannot be multiplied. We do still need to leave the bound on the impl block as well though.
+
+## Implementing Multiply for our Fraction type
+
+It may have occurred to you that since our Fraction type is able to be multiplied now, perhaps we should implement our Multiply trait for it rather than just associating a one-off method. I totally agree, so let's do it. It actually only takes a small adjustment to our previous impl block.
+
+```rust
+impl<T: Multiply> Multiply for  Fraction<T> {
+    /// Multiply two fractions together, and return the Product
+    /// as a third new fraction
+    fn multiply(&self, other: &Self) -> Self {
+        Self {
+            numerator: self.numerator.multiply(&other.numerator),
+            denominator: self.denominator.multiply(&other.denominator),
+        }
+    }
+}
+```
+
+All we had to do was change the impl block to `impl` block. We still have the same trait bound as before, but we've added `Multiply for` indicating we're now implementing a trait. Since our function signature already matched the trait's expected signature, we are done. If we had previously called out one-off method something different like "times" or something, we would have to make minor adjustments there as well.
+
+## Limitations
+
+As a final note, I'll mention one property of Rust's type system that sometimes feels like a limitation. You can only implement a trait for a type if _either_ the trait or the type (or both) are defined in the same crate as the implementation. While this can sometimes feel like a limitation, it is actually very important to prohibit this. If we allowed implementing Foreign traits on Foreign types, then it may be that multiple conflicting implementation exist in different crates, and the compiler would be unable to catch this because it checks one crate at a time.
+
+It is unlikely that you'll encounter this limitation until you have a little more rust experience under your belt. But when you do encounter it, know that there is a work around, and it is to use the new type pattern that we discussed previously, and then implement the trait on your new type.
