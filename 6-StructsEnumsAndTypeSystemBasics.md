@@ -585,8 +585,27 @@ impl<T: Multiply> Multiply for  Fraction<T> {
 
 All we had to do was change the impl block to `impl` block. We still have the same trait bound as before, but we've added `Multiply for` indicating we're now implementing a trait. Since our function signature already matched the trait's expected signature, we are done. If we had previously called out one-off method something different like "times" or something, we would have to make minor adjustments there as well.
 
-## Limitations
+## Limitation
 
 As a final note, I'll mention one property of Rust's type system that sometimes feels like a limitation. You can only implement a trait for a type if _either_ the trait or the type (or both) are defined in the same crate as the implementation. While this can sometimes feel like a limitation, it is actually very important to prohibit this. If we allowed implementing Foreign traits on Foreign types, then it may be that multiple conflicting implementation exist in different crates, and the compiler would be unable to catch this because it checks one crate at a time.
 
 It is unlikely that you'll encounter this limitation until you have a little more rust experience under your belt. But when you do encounter it, know that there is a work around, and it is to use the new type pattern that we discussed previously, and then implement the trait on your new type.
+
+# Some Common Traits and Collections
+
+In this module we have discussed how to create your own types, both structs and enums, create your own traits for abstracting shared behavior, and implement your traits on your types. In this final video, we'll take a look through some of the most common types and traits that are defined in the standard library and how you might encounter them.
+
+TODO flesh this out.
+
+Types
+------
+Vec
+String
+BTreeMap
+BTreeSet - Note there are also hashtable based maps and sets with similar interfaces, but we will not be looking at them because they are not available in the Substrate Runtime.
+
+Traits
+------
+Iterator
+Display
+Debug
