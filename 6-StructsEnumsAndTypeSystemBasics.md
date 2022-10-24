@@ -317,8 +317,6 @@ Many of the types we've defined in this module are more restrictive than they ne
 
 To address this problem, Rust's Type system has a notion of Generic types, or "generics" for short. Code that uses generics and related concepts can become quite complex, and we will dive into that full complexity in due course, but for now, let's take a look at a simple use of generic types.
 
-TODO explain this
-
 ```rust
 /// A fraction type that allows arbitrarily large or small numerators and denominators
 struct Fraction<T> {
@@ -327,7 +325,9 @@ struct Fraction<T> {
 }
 ```
 
-TODO
+In this improved definition of our Fraction type, we do not explicitly define the type that the numerator and denominator field will be. Rather we say they will be some generic type `T`. We define the single generic type in angle brackets after the name of the struct, `Fraction`. This means that `T` can be replaced by any type we may wish to use. While `T` can indeed be any type, because both `numerator` and `denominator` are given the type `T`, that means that they must be the _same_ type. They cannot be two different types; that would require two generic parameters.
+
+When we create instances of our new generic fraction type, we must fill in the generic type.
 
 ```rust
 let my_precise_fraction = Fraction<u128> {
